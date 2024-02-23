@@ -1,0 +1,62 @@
+import time
+from machine import Pin
+from machine import PWM
+
+    
+pwmServo = PWM(Pin(1))
+pwmMotor = PWM(Pin(2))
+
+# create a PWM object on a pin and set freq and duty
+#pwmServo = PWM(servoPin, freq=100)
+#pwmMotor = PWM(motorPin, freq=100)
+
+#pwmServo.init(freq=100, duty_ns=1500000)
+#pwmMotor.init(freq=100, duty_ns=1500000)
+
+pwmServo.freq(100)
+pwmMotor.freq(100)
+    
+while True:
+    
+    print("Start")
+    # Straight (1.5 ms) and Brake (1.5 ms) for 10 seconds
+    pwmServo.duty_ns(1500000) #steer straight (servo)
+    pwmMotor.duty_ns(1500000) #brake (motor)
+    time.sleep_ms(10000) #delay 10s
+    print("HERE")
+    #Left (1.1 ms) and Forward (1.65 ms) for 2 seconds
+    pwmServo.duty_ns(1100000) #steer left (servo)
+    pwmMotor.duty_ns(1650000) #forward (motor)
+    time.sleep_ms(2000) #delay 2s
+    
+    #Straight (1.5 ms) and Forward (1.65 ms) for 2 seconds
+    pwmServo.duty_ns(1500000) 
+    pwmMotor.duty_ns(1650000) 
+    time.sleep_ms(2000) #delay 2s
+    
+    #Right (1.9 ms) and Forward (1.65 ms) for 2 seconds
+    pwmServo.duty_ns(1900000) 
+    pwmMotor.duty_ns(1650000) 
+    time.sleep_ms(2000) #delay 2s
+    
+    #Straight (1.5 ms) and Brake (1.5 ms) for 2 seconds
+    pwmServo.duty_ns(1500000) 
+    pwmMotor.duty_ns(1500000) 
+    time.sleep_ms(2000) #delay 2s
+    
+    #Straight (1.5 ms) and Reverse (1.3 ms) for 1 second
+    pwmServo.duty_ns(1500000) 
+    pwmMotor.duty_ns(1300000) 
+    time.sleep_ms(1000) #delay 1s
+    
+    #Straight (1.5 ms) and Brake (1.5 ms) for 1 second
+    pwmServo.duty_ns(1500000) 
+    pwmMotor.duty_ns(1500000) 
+    time.sleep_ms(1000) #delay 1s
+    
+    #Straight (1.5 ms) and Reverse (1.3 ms) for 2 second
+    pwmServo.duty_ns(1500000) 
+    pwmMotor.duty_ns(1300000) 
+    time.sleep_ms(2000) #delay 2s
+        
+
