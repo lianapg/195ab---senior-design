@@ -1,0 +1,27 @@
+from machine import Pin, Timer
+
+# Global variable to count the number of falling edges
+count_per_sec = 0
+
+# Sets up GPIO pin as input pin so it can read wheel input
+DO_pin = Pin(15, Pin.IN, Pin.PULL_DOWN)
+
+# Callback function for handling the interrupt
+def handler_interrupt(pin):
+    global count_per_sec
+    count_per_sec += 1
+
+# Attaches falling edge interrupt to DO_pin (interrupt will trigger every time the sensor detects a white mark)
+DO_pin.irq(trigger=Pin.IRQ_FALLING, handler=handler_interrupt)
+
+# Timer setup for 1-second intervals
+timer = Timer()
+
+def time_interval(timer):
+    global count_per_sec
+    print(f"Counts per second: {count_per_sec}")
+    # Reset the counter for the next interval
+    count_per_sec = 0
+
+# Initialize the timer to call time_interval function every 1000ms (1 second)
+timer.init(freq=1, mode=Timer.PERIODIC, callback=time_interval)
