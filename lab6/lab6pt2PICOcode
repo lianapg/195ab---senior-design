@@ -1,1 +1,25 @@
+from machine import Pin,UART
+import time
+
+uart = UART(0, baudrate=9600, tx=Pin(16), rx=Pin(17))
+uart.init(bits=8, parity=None, stop=1)
+
+print("Pico UART initialized, waiting for data...")
+
+while True:
+    # Wait for data from the Raspberry Pi 4
+    if uart.any():
+        data = uart.read(1)
+        if data:
+            print("Received from Pi 4:", data.decode('utf-8'))
+
+            # Send the next letter in the alphabet
+            next_letter = chr(ord(data) + 1)
+            uart.write(next_letter.encode('utf-8'))
+            print("Sent to Pi 4:", next_letter)
+
+    time.sleep(0.1)  # Short delay to avoid using too much CPU
+else:
+    print("error reading uart")
+
 
