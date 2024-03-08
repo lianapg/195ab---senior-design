@@ -1,1 +1,43 @@
+import serial
+import time
+import tty, sys, termios
+
+#init serial connection
+ser = serial.Serial(
+    port='/dev/ttyS0',
+    baudrate=9600,
+    parity=serial.PARITY_NONE,
+    stopbits=serial.STOPBITS_ONE,
+    bytesize=serial.EIGHTBITS,
+    timeout=1
+)
+
+filedescriptors = termios.tcgetattr(sys.stdin)
+tty.setcbreak(sys.stdin)
+x = 0
+
+ser.flush()
+start_char = 'A' #A
+
+#send first char to pico as ascii number
+try:
+    while True:
+        x = sys.stdin.read(1)[0]
+        print("You pressed: ", x)
+        if x == "w" or x == "a" or x == "s" or x == "d" or x == "x":
+            ser.write(x.encode('utf-8'))
+            print ("sent: ", x)
+        
+        time.sleep(0.1)
+        
+except KeyboardInterrupt:
+    print("Program terminated")
+    
+termios.tcsetattr(sys.stdin, termios.TCSADRAIN, filedescriptors)
+ser.close()
+    
+
+#pico: convert number to letter, print letter, add 1 to num received, sent that num back to 4
+
+
 
