@@ -1,1 +1,39 @@
+import serial
+import time
+
+#init serial connection
+ser = serial.Serial(
+    port='/dev/ttyS0',
+    baudrate=9600,
+    parity=serial.PARITY_NONE,
+    stopbits=serial.STOPBITS_ONE,
+    bytesize=serial.EIGHTBITS,
+    timeout=1
+)
+
+ser.flush()
+
+start_char = 'A' #A
+
+#send first char to pico as ascii number
+try:
+    while True:
+        ser.write(start_char.encode('utf-8'))
+        print ("sent: ", start_char)
+        
+        time.sleep(0.1)
+        
+        data = ser.read()
+        if data:
+            print("Received: ", data.decode('utf-8'))
+            start_char = data.decode('utf-8')
+        
+except KeyboardInterrupt:
+    print("Program terminated")
+    
+ser.close()
+    
+
+#pico: convert number to letter, print letter, add 1 to num received, sent that num back to 4
+
 
