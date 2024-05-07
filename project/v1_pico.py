@@ -2,6 +2,8 @@ from machine import Pin,UART
 from machine import PWM
 import time
 
+led = Pin("LED", Pin.OUT)
+led.on()
 uart = UART(0, baudrate=9600, tx=Pin(16), rx=Pin(17))
 uart.init(bits=8, parity=None, stop=1)
 
@@ -16,28 +18,36 @@ pwmMotor.duty_ns(1500000)
 pwmServo.duty_ns(1500000)
 time.sleep(0.5)
 
-pwmMotor.duty_ns(1520000)
-pwmServo.duty_ns(1500000)
-time.sleep(0.5)
+#pwmMotor.duty_ns(1520000)
+#pwmServo.duty_ns(1700000)
+#time.sleep(0.5)
 
-pwmMotor.duty_ns(1540000)
-pwmServo.duty_ns(1500000)
-time.sleep(0.5)
-
-pwmMotor.duty_ns(1560000)
-pwmServo.duty_ns(1500000)
-time.sleep(0.5)
-
-pwmMotor.duty_ns(1580000)
-pwmServo.duty_ns(1500000)
-time.sleep(0.5)
-
-pwmMotor.duty_ns(1600000)
-pwmServo.duty_ns(1500000)
-time.sleep(0.5)
-
-#pwmServo.duty_ns(1500000)
-print("Motor test done")
+#pwmMotor.duty_ns(1540000)
+#pwmServo.duty_ns(1900000)
+#time.sleep(0.5)
+# 
+# pwmMotor.duty_ns(1560000)
+# pwmServo.duty_ns(1700000)
+# time.sleep(0.5)
+# 
+# pwmMotor.duty_ns(1580000)
+# pwmServo.duty_ns(1500000)
+# time.sleep(0.5)
+# 
+# pwmMotor.duty_ns(1600000)
+# pwmServo.duty_ns(1300000)
+# time.sleep(0.5)
+# 
+# pwmMotor.duty_ns(1600000)
+# pwmServo.duty_ns(1100000)
+# time.sleep(0.5)
+# 
+# pwmMotor.duty_ns(1600000)
+# pwmServo.duty_ns(1500000)
+# time.sleep(0.5)
+# 
+# #pwmServo.duty_ns(1500000)
+# print("Motor test done")
 
 
 while True:
@@ -51,13 +61,13 @@ while True:
             if char=="F":
                 print("Forward")
                 #pwmMotor.duty_ns(1550000) 
-                pwmMotor.duty_ns(1600000)
+                pwmMotor.duty_ns(1570000)
                 pwmServo.duty_ns(1500000)
                 #time.sleep(2)  # Short delay to avoid using too much CPU
             elif char=="L":
                 print("Left")
                 #pwmMotor.duty_ns(1550000) 
-                pwmMotor.duty_ns(1600000) 
+                pwmMotor.duty_ns(1570000) 
                 pwmServo.duty_ns(1900000)
                 #time.sleep(2)  # Short delay to avoid using too much CPU
             #elif char=="s":
@@ -67,7 +77,7 @@ while True:
             elif char=="R":
                 print("Right")
                 #pwmMotor.duty_ns(1550000)
-                pwmMotor.duty_ns(1600000) 
+                pwmMotor.duty_ns(1570000) 
                 pwmServo.duty_ns(1100000)
                 #time.sleep(0.1)  # Short delay to avoid using too much CPU
            # elif char=="x":
@@ -75,7 +85,9 @@ while True:
              #   pwmMotor.duty_ns(1500000) 
              #   pwmMotor.duty_ns(1400000) 
              #   pwmServo.duty_ns(1500000)
-            #else
+            else :
+                pwmMotor.duty_ns(1570000)
+                pwmServo.duty_ns(1500000)
     time.sleep(0.1)  # Short delay to avoid using too much CPU
 
 else:
