@@ -1,0 +1,138 @@
+from machine import Pin,UART
+from machine import PWM
+import time
+
+led = Pin("LED", Pin.OUT)
+#led.on()
+uart = UART(0, baudrate=9600, tx=Pin(16), rx=Pin(17))
+uart.init(bits=8, parity=None, stop=1)
+
+pwmServo = PWM(Pin(0)) #ch 2 on esc
+pwmMotor = PWM(Pin(2)) #ch 1 on esc
+
+IN_A = Pin(20, Pin.OUT) #blue wire
+IN_B = Pin(21, Pin.OUT) #green wire
+
+# set the value low then high
+IN_A.value(0)
+IN_B.value(1)
+
+
+pwmServo.freq(100)
+pwmMotor.freq(100)
+
+print("Pico UART initialized, waiting for data...")
+#pwmMotor.duty_ns(1500000)
+pwmServo.duty_ns(1500000)
+time.sleep(0.5)
+#pwmMotor.duty_ns(1520000)
+pwmServo.duty_ns(1700000)
+time.sleep(0.5)
+#pwmMotor.duty_ns(1540000)
+pwmServo.duty_ns(1500000)
+time.sleep(0.5)
+#pwmMotor.duty_ns(1560000)
+pwmServo.duty_ns(1300000)
+time.sleep(0.5)
+# pwmMotor.duty_ns(1565000)
+# time.sleep(0.5)
+# pwmMotor.duty_ns(1570000);pi,
+# time.sleep(0.5)
+# pwmMotor.duty_ns(1575500)
+# time.sleep(0.5)
+pwm = 1577000 * 0.6
+pwmMotor.duty_ns(int(pwm))
+time.sleep(0.5)
+#pwmMotor.duty_ns(1000000)
+
+
+#pwmServo.duty_ns(1500000)
+print("Motor test done")
+led.on()
+
+
+while True:
+    print("Pico UART initialized, waiting for data...")
+    #pwmMotor.duty_ns(1500000)
+    pwmServo.duty_ns(1500000)
+    time.sleep(0.5)
+    #pwmMotor.duty_ns(1520000)
+    pwmServo.duty_ns(1700000)
+    time.sleep(0.5)
+    #pwmMotor.duty_ns(1540000)
+    pwmServo.duty_ns(1500000)
+    time.sleep(0.5)
+    #pwmMotor.duty_ns(1560000)
+    pwmServo.duty_ns(1300000)
+    time.sleep(0.5)
+    # pwmMotor.duty_ns(1565000)
+    # time.sleep(0.5)
+    # pwmMotor.duty_ns(1570000)
+    # time.sleep(0.5)
+    # pwmMotor.duty_ns(1575500)
+    # time.sleep(0.5)
+    pwm = 1577000 * 0.6
+    pwmMotor.duty_ns(int(pwm))
+    time.sleep(0.5)
+    #pwmMotor.duty_ns(1000000)
+
+
+    #pwmServo.duty_ns(1500000)
+    print("Motor test done")
+    led.on()
+
+    # Wait for data from the Raspberry Pi 4
+#     if uart.any():
+#         data = uart.read(7)
+#         if data:
+#             try:
+#                 char = data.decode('utf-8')
+#                 print("Received from Pi 4:", char)
+#                 pw = int(char)
+#                 if pw >= 1100000 and pw <= 1900000: #pwm is the speed; in_a/in_b is the direction
+#                     #if pw >= 1500000:
+#                     # set the value low then high
+#                     if pw >= 1500000 and pw <= 1700000:
+#                         IN_A.value(0)
+#                         IN_B.value(1)
+#                         pwmServo.duty_ns(pw)
+#                         print('pwm_servo=', pwmServo.duty_ns())
+#                         print('pwm_motor=', pwmMotor.duty_ns())
+# 
+#                         #pwmMotor.duty_ns(1500000)
+#                         print("forward")
+#                     elif pw > 1700000 and pw <= 1900000: 
+#                         IN_A.value(0)
+#                         IN_B.value(1)
+#                         pwmServo.duty_ns(pw)
+#                         #pwm = 1577000 * 0.8
+#                         #pwmMotor.duty_ns(int(pwm))
+#                         print('pwm_servo=', pwmServo.duty_ns())
+#                         print('pwm_motor=', pwmMotor.duty_ns())
+#                         #pwmServo.duty_ns(pw)
+#                         #pwmMotor.duty_ns(1500000)
+#                         print("right")
+#                     elif pw >= 1100000 and pw < 1500000:
+#                         IN_A.value(0)
+#                         IN_B.value(1)
+#                         pwmServo.duty_ns(pw)
+#                         #pwm = 1577000 * 0.8
+#                         #pwmMotor.duty_ns(int(pwm))
+#                         print('pwm_servo=', pwmServo.duty_ns())
+#                         print('pwm_motor=', pwmMotor.duty_ns())
+#                         #pwmServo.duty_ns(pw)
+#                         #pwmMotor.duty_ns(1500000)
+#                         print("left")
+#                     #pwmServo.duty_ns(pw)
+#                     #print("here")
+#                     
+#             except:
+#                 print("Error. skipping.")
+#                 continue
+#             #uart.write(char.encode('utf-8'))
+#             #print("Sent to Pi 4:", char)
+#     time.sleep(0.1)  # Short delay to avoid using too much CPU
+# 
+# else:
+#     print("error reading uart")
+
