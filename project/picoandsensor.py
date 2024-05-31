@@ -67,10 +67,10 @@ while True:
     if distance != -1:
         print("Distance: {:.2f} cm".format(distance))
     
-    # Speed up the car if an object is detected within 5 cm
-    if distance != -1 and distance < 5:
+    # Speed up the car if an object is detected within 10 cm
+    if distance != -1 and distance < 10:
         pwmMotor.duty_ns(1600000)  # Speed up the motor
-        print("Object detected within 5 cm! Speeding up the motor.")
+        print("Object detected within 10 cm! Speeding up the motor.")
     else:
         pwmMotor.duty_ns(1573000)  # Normal speed
 
@@ -107,3 +107,4 @@ while True:
 
 else:
     print("error reading uart")
+
