@@ -1,0 +1,99 @@
+#import libraries
+import cv2 #cv2 is an openCV library
+import numpy as np #allows numerical computations
+from picamera2 import Picamera2 #rasPi libary -> allows for capturing images 7 videos
+
+#mask the image to only show the ROI (reduces noise & distracting objects)
+def region_of_interest(img, vertices):
+    mask = np.zeros_like(img) #create a black image (mask) the same size as input image
+    cv2.fillPoly(mask, vertices, 255) #fill the specified ROI with white on the created mask
+    masked_img = cv2.bitwise_and(img, mask) #use bitwise btwn mask & orignial image to keep just ROI
+    return masked_img #within the ROI, original values retained, and the rest of image will be black
+
+#draw lines based on the hough line transform
+def draw_lines(img, lines):
+    if lines is not None:  #if lines is not none
+        for line in lines: #iterate through each line 
+            for x1, y1, x2, y2 in line:
+                if x2-x1 == 0:
+                    cv2.line(img, (x1, y1), (x2, y2), (0, 255, 0), 3) #BGR format
+                else:
+                    slope = (y2-y1) / (x2-x1)
+                    if np.abs(slope) > 1:
+                        cv2.line(img, (x1, y1), (x2, y2), (0, 255, 0), 3) #BGR format
+
+                    #draw each line with a color green and a thickness of 3 pixels
+                    #use green because it has greatest intensity (so it will be bright grey later)
+
+def process_image(img, img2):
+    #convert original image to greyscale (color not needed for edge detection)
+    gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    #uses gaussian blur to filter noise
+    #each pixel's new value = weighted avg of itself & neighbor values (weights decrease with distance from pixel)
+    #lower std dev = more blur
+    #stddev parameter = 0 means opencv will autocalulate the optimal stddev value for us
+    blur_img = cv2.GaussianBlur(gray_img, (5, 5), 0) #use5x5 kernel (5x5 grid of pixels for avging
+
+    #use canny edge detection to find edges
+    #uses thresholds to determine strong/weak/non-edge pixels
+    #pixel gradient magnitude > threshold = strong
+    #pgm < high but > low = weak
+    #pgm < low = suppress pixel (make black)
+    canny_img = cv2.Canny(blur_img, 100, 200)
+
+    #define region of interest
+    imshape = img.shape #get dimensions of our image (imshape[0] = height, imshape[1] = width)
+    #bottom left, top left, top right, bottom right (each are ordered pairs)
+    #vertices = np.array([[(0, imshape[0]), (450, 320), (490, 320), (imshape[1], imshape[0])]], dtype=np.int32)
+    vertices = np.array([[(0, imshape[0]), (200, imshape[0]*0.33), (450, imshape[0]*0.33), (imshape[1], imshape[0])]], dtype=np.int32)
+    masked_img = region_of_interest(canny_img, vertices)
+
+    #probabilistic hough line transform to detect lines
+    #use image after applying ROI mask
+    lines = cv2.HoughLinesP(masked_img, 1, np.pi/180, 50, np.array([]), minLineLength=50, maxLineGap=10)
+
+    #create an empty black image to draw lines on (3 color channels, w/ image pixels being 8-bit unsigned ints)
+    #line_img = np.zeros((img.shape[0], img.shape[1], 3), dtype=np.uint8)
+    line_img = np.zeros((img.shape[0], img.shape[1], 3), dtype=np.uint8)
+    
+    #draw lines detected from hough transform onto blank img in ROI
+    draw_lines(line_img, lines)
+    draw_lines(img2, lines)
+
+    #combine original image with the line image to get the clear, non-noisy final
+    final_img = cv2.addWeighted(img, 0.8, line_img, 1, 0)
+
+    return final_img, masked_img, line_img
+
+
+picam2 = Picamera2()
+picam2.start()
+print("Camera started, press 'q' to quit.")
+
+while True:
+    try:
+        #capture image & convert to BGR from RBG
+        array = picam2.capture_array("main")
+        frame = cv2.cvtColor(array, cv2.COLOR_RGB2BGR)
+        frame2 = cv2.cvtColor(array, cv2.COLOR_RGB2BGR)
+        
+
+        #process image
+        final_img, masked_img, line_img = process_image(frame, frame2)
+
+        #display images for us
+        cv2.imshow('Current', frame)
+        cv2.imshow('Canny and ROI', masked_img)
+        cv2.imshow('Detected Lines & Original', frame2)
+
+        if cv2.waitKey(30) & 0xFF == ord('q'):
+           break
+    except KeyboardInterrupt:
+        break
+
+#cleanup
+cv2.destroyAllWindows()
+picam2.close()
+print('Stopped')
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
